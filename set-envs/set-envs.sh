@@ -15,26 +15,34 @@
 
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-	echo "Stores the contents of the files under ./private in environment variables.
+	echo "
+Exports the contents of txt-files in the current directory to environment 
+variables.
+
+Navigate to the target directory. Then source the file, aka: 
+'source ${0}' or '. ${0}'
 
 The file names are converted with the following rules:
 * the .txt extension is truncated
-* a-z characters are uppercased
-* dashes are converted to underscores"
+* letter characters are uppercased
+* dashes are converted to underscores
+
+Example:
+    'foo-bar1.txt' will expand to 'export FOO_BAR1=<contents of foo-bar1.txt>'"
 	exit 0
 fi
 
 
-FILES=$(find private/ | grep .txt)
+FILES=$(ls -1 *.txt)
 
 for FILE in $FILES; do
   VAR=$(
-    echo "$FILE" |
-      sed 's/private\/\(.\+\)\.txt/\1/g' |
+    basename "$FILE" |
+      sed 's/.txt$//g' |
       tr "[:lower:]" "[:upper:]" |
       tr - _
   )
   export "$VAR"="$(cat "$FILE")"
-  echo set "$VAR to $(cat "$FILE")"
+  echo export "$VAR"="$(cat "$FILE")"
 done
 
