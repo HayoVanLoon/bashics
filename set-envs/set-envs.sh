@@ -14,15 +14,27 @@
 # limitations under the License.
 
 
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+	echo "Stores the contents of the files under ./private in environment variables.
+
+The file names are converted with the following rules:
+* the .txt extension is truncated
+* a-z characters are uppercased
+* dashes are converted to underscores"
+	exit 0
+fi
+
+
 FILES=$(find private/ | grep .txt)
 
 for FILE in $FILES; do
   VAR=$(
     echo "$FILE" |
-      sed 's/private\/\(.*\)\.txt/\1/g' |
+      sed 's/private\/\(.\+\)\.txt/\1/g' |
       tr "[:lower:]" "[:upper:]" |
       tr - _
   )
   export "$VAR"="$(cat "$FILE")"
   echo set "$VAR to $(cat "$FILE")"
 done
+
