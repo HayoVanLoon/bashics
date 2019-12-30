@@ -15,7 +15,7 @@
 .PHONY: examples
 
 examples:
-	mkdir -p private/
-	echo "123" >> private/example-foo.txt
-	echo "456" >> private/example-bar.txt
+	mkdir -p tmp/
+	echo "123" >> tmp/example-foo.txt
+	echo "456" >> tmp/example-bar.txt
 
