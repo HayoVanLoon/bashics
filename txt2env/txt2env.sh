@@ -42,7 +42,8 @@ for FILE in $FILES; do
       tr "[:lower:]" "[:upper:]" |
       tr - _
   )
-  export "$VAR"="$(cat "$FILE")"
-  echo export "$VAR"="$(cat "$FILE")"
+  CMD="export $VAR=$(cat $FILE)"
+  echo $CMD
+  eval $CMD
 done
 
