@@ -13,14 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+show_help() {
 	echo "
+Usage: source txt2env
+
 Exports the contents of txt-files in the current directory to environment 
 variables.
 
 Navigate to the target directory. Then source the file, aka: 
-'source ${0}' or '. ${0}'
+'source ${0}', '. ${0}' or 'eval ${0}'
 
 The file names are converted with the following rules:
 * the .txt extension is truncated
@@ -30,20 +31,28 @@ The file names are converted with the following rules:
 Example:
     'foo-bar1.txt' will expand to 'export FOO_BAR1=<contents of foo-bar1.txt>'"
 	exit 0
+}
+
+if [ "$1" = "help" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+	show_help
 fi
 
+if [ -n "$1" ]; then
+	SRC="$1"
+else
+	SRC="."
+fi
 
-FILES=$(ls -1 *.txt)
+FILES=$(ls -1 "${SRC}"/*.txt)
 
 for FILE in $FILES; do
-  VAR=$(
-    basename "$FILE" |
-      sed 's/.txt$//g' |
-      tr "[:lower:]" "[:upper:]" |
-      tr - _
-  )
-  CMD="export $VAR=$(cat $FILE)"
-  echo $CMD
-  eval $CMD
+	VAR=$(
+		basename "$FILE" |
+			sed 's/.txt$//g' |
+			tr "[:lower:]" "[:upper:]" |
+			tr - _
+	)
+	CMD="export $VAR=$(cat "$FILE")"
+	echo "$CMD"
+	eval "$CMD"
 done
-
