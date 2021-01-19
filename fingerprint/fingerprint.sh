@@ -8,7 +8,7 @@ function usage() {
 
 	Fingerprints all references to static files in the specified file.
 
-	Reference must match '<basename>?v=<number>'.
+	Reference must match '<basename>?v=<alphanumeric>'.
 	Uses md5sum for the fingerprint.
 
 	-f FILE			file to edit
@@ -47,15 +47,16 @@ if [ ! -d "${STATIC_DIR}" ]; then
 	exit 1
 fi
 
-STATICS=$(find "${STATIC_DIR}")
 
+FP=0
+
+STATICS=$(find "${STATIC_DIR}")
 for F in ${STATICS}; do
 	if [ -f "${F}" ]; then
-		FP=$(md5sum "${F}" | awk '{ print $1 }')
-		if [ "${REVERT}" -eq "1" ]; then
-			FP=0
+		if [ "${REVERT}" -ne "1" ]; then
+			FP=$(md5sum "${F}" | awk '{ print $1 }')
 		fi
 		BN=$(basename "${F}")
-		sed -i -E "s/(${BN}\?v=)([0-9]+)/\1${FP:0:8}/g" "${FILE}"
+		sed -E "s/(${BN}\?v=)([0-9a-zA-Z]+)/\1${FP:0:8}/g" "${FILE}"
 	fi
 done
