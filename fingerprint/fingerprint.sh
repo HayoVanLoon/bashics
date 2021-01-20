@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euxo pipefail
+set -eo pipefail
 
 function usage() {
 	echo "Usage:
@@ -57,6 +57,6 @@ for F in ${STATICS}; do
 			FP=$(md5sum "${F}" | awk '{ print $1 }')
 		fi
 		BN=$(basename "${F}")
-		sed -E "s/(${BN}\?v=)([0-9a-zA-Z]+)/\1${FP:0:8}/g" "${FILE}"
+		sed -i -E "s/(${BN}\?v=)([0-9a-zA-Z]+)/\1${FP:0:8}/g" "${FILE}"
 	fi
 done
