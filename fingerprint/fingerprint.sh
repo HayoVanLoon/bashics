@@ -58,5 +58,6 @@ for F in ${STATICS}; do
 		fi
 		BN=$(basename "${F}")
 		sed -i -E "s/(${BN}\?v=)([0-9a-zA-Z]+)/\1${FP:0:8}/g" "${FILE}"
+		echo "${F}	${FP:0:8}"
 	fi
 done
